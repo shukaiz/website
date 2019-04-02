@@ -46,7 +46,16 @@ var visualize = function(data) {
   svg.append("g").call(xAxis);
   svg.append("g").call(yAxis);
 
-  svg.selectAll("body")
+  var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .html(function (d, i) {
+     return "Illinois " + d["Location"] + " " + d["Opponent"] + ": " +
+       d["IlliniScore"] + "-" + d["OpponentScore"] + " (" + d["Result"] + ")";
+  });
+
+  svg.call(tip);
+
+  svg.selectAll("circles")
      .data(data)
      .enter()
      .append("circle")
@@ -63,7 +72,9 @@ var visualize = function(data) {
        if (d['Result'] == 'L') return "blue";
        return "DarkOrange";
      })
-     .attr("stroke", "black");
+     .attr("stroke", "black")
+     .on('mouseover', tip.show)
+     .on('mouseout', tip.hide)
 
   svg.append("text")
      .attr("x", (width / 2))
